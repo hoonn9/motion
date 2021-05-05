@@ -1,5 +1,3 @@
-import { ImageComponent } from "./image.js";
-
 export class PageComponent {
   private element: HTMLUListElement;
 
@@ -11,10 +9,5 @@ export class PageComponent {
 
   attachTo(parent: HTMLElement, position: InsertPosition = "afterbegin") {
     parent.insertAdjacentElement(position, this.element);
-  }
-
-  addImage(url: string, content: string) {
-    const image = new ImageComponent(url, content);
-    this.element.insertAdjacentElement("beforeend", image.element);
   }
 }

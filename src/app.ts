@@ -1,4 +1,5 @@
-import { PageComponent } from "./components/page.js";
+import { ImageComponent } from "./components/page/item/image.js";
+import { PageComponent } from "./components/page/page.js";
 
 class App {
   private readonly page: PageComponent;
@@ -6,7 +7,8 @@ class App {
   constructor(appRoot: HTMLElement) {
     this.page = new PageComponent();
     this.page.attachTo(appRoot);
-    this.page.addImage("https://t1.kakaocdn.net/kakaocorp/Service/KakaoTalk/svclogo_kakaotalk.png", "테스트");
+    const image = new ImageComponent("Image Title", "https://picsum.photos/600/300");
+    image.attachTo(appRoot, "beforeend");
   }
 }
 
