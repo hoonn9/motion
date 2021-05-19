@@ -1,10 +1,5 @@
 import { BaseComponent, Component } from "../component.js";
 
-export interface PageItemComponentImpl extends Component {
-  setOnCloseListener(listener: OnCloseListener): void;
-  addChild(child: Component): void;
-}
-
 // 조합하고 조립할 수 있는
 export interface Composable {
   addChild(child: Component): void;
@@ -12,12 +7,23 @@ export interface Composable {
 
 type OnCloseListener = () => void;
 
-class PageItemComponent extends BaseComponent<HTMLElement> implements Composable {
+export interface SectionContainer extends Component, Composable {
+  setOnCloseListener(listener: OnCloseListener): void;
+}
+
+// constructor 타입 선언
+// class 의 인수로 클래스 자체를 넘겨주기 위함
+type SectionContainerConstructor = {
+  new (): SectionContainer;
+};
+
+export class PageItemComponent extends BaseComponent<HTMLElement> implements SectionContainer {
   private closeListener?: OnCloseListener;
-  constructor(theme: "DARK" | "LIGHT") {
+
+  constructor() {
     super(`
     <li class="page-item">
-      <section class="page-item__body" style="color: #${theme === "DARK" ? "#000" : "FFF"}"></section>
+      <section class="page-item__body"></section>
         <div class="page-item__controls">
           <button class="close">❌</button>
         </div>
@@ -37,25 +43,13 @@ class PageItemComponent extends BaseComponent<HTMLElement> implements Composable
   }
 }
 
-export class DarkPageItemComponent extends PageItemComponent {
-  constructor() {
-    super("DARK");
-  }
-}
-
-export class LightPageItemComponent extends PageItemComponent {
-  constructor() {
-    super("LIGHT");
-  }
-}
-
 export class PageComponent extends BaseComponent<HTMLUListElement> implements Composable {
-  constructor(private pageItem: { new (): PageItemComponentImpl }) {
+  constructor(private pageItemContructor: SectionContainerConstructor) {
     super('<ul class="page"></ul>');
   }
 
   addChild(section: Component) {
-    const item = new this.pageItem();
+    const item = new this.pageItemContructor();
     item.addChild(section);
     item.attachTo(this.element, "beforeend");
     item.setOnCloseListener(() => {
