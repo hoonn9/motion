@@ -1,7 +1,6 @@
-// import { BaseComponent } from "../../component.js";
-import { PageItemComponent } from "../item.js";
+import { BaseComponent } from "../../component.js";
 
-export class ImageComponent extends PageItemComponent {
+export class ImageComponent extends BaseComponent<HTMLElement> {
   constructor(title: string, url: string) {
     super(
       `

@@ -1,7 +1,6 @@
-// import { BaseComponent } from "../../component.js";
-import { PageItemComponent } from "../item.js";
+import { BaseComponent } from "../../component.js";
 
-export class NoteComponent extends PageItemComponent {
+export class NoteComponent extends BaseComponent<HTMLElement> {
   constructor(title: string, body: string) {
     super(
       `
