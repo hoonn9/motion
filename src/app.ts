@@ -1,5 +1,5 @@
 import { Component } from "./components/component.js";
-import { DialogComponent } from "./components/dialog/dialog.js";
+import { InputDialog } from "./components/dialog/dialog.js";
 import { ImageComponent } from "./components/page/item/image.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { TodoComponent } from "./components/page/item/todo.js";
@@ -13,16 +13,6 @@ class App {
   constructor(appRoot: HTMLElement) {
     // constructor 안에서 다른 클래스의 직접 생성이 있는건 좋지 않다.
     // depengency injection 이 필요
-
-    const bannerButtons = document.querySelectorAll(".control-panel li button")! as NodeListOf<HTMLButtonElement>;
-    for (const node of bannerButtons) {
-      console.log(node);
-
-      node.onclick = () => {
-        console.log("onclick");
-        new DialogComponent();
-      };
-    }
 
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
@@ -38,6 +28,22 @@ class App {
 
     const note = new NoteComponent("Note Title", "NoteComponent~");
     this.page.addChild(note);
+
+    const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
+    imageBtn.addEventListener("click", () => {
+      const dialog = new InputDialog();
+
+      dialog.setOnCloseListener(() => {
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들어서 페이지에 추가
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
   }
 }
 
