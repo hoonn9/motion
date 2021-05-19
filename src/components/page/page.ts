@@ -19,7 +19,8 @@ class PageItemComponent extends BaseComponent<HTMLElement> implements Composable
   addChild(child: Component) {
     const container = this.element.querySelector(".page-item__body")! as HTMLElement;
 
-    // const remove button this.element.querySelector(".close")! as HTMLButtonElement;
+    const removeButton = this.element.querySelector(".close")! as HTMLButtonElement;
+    removeButton.addEventListener("mousedown", this.element.remove.bind(this.element));
 
     child.attachTo(container);
   }
