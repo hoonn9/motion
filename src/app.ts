@@ -3,7 +3,7 @@ import { ImageComponent } from "./components/page/item/image.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { TodoComponent } from "./components/page/item/todo.js";
 import { VideoComponent } from "./components/page/item/video.js";
-import { Composable, PageComponent } from "./components/page/page.js";
+import { Composable, DarkPageItemComponent, PageComponent } from "./components/page/page.js";
 
 class App {
   // Component 이면서 Composable 가능한 page
@@ -13,7 +13,7 @@ class App {
     // constructor 안에서 다른 클래스의 직접 생성이 있는건 좋지 않다.
     // depengency injection 이 필요
 
-    this.page = new PageComponent();
+    this.page = new PageComponent(DarkPageItemComponent);
     this.page.attachTo(appRoot);
 
     const image = new ImageComponent("Image Title", "https://picsum.photos/600/300");
