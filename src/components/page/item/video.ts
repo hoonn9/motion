@@ -14,7 +14,6 @@ export class VideoComponent extends BaseComponent<HTMLElement> {
     const iframe = this.element.querySelector(".video__iframe")! as HTMLIFrameElement;
     iframe.src = this.convertToEmbeddedUrl(url);
 
-    console.log(url);
     const titleElement = this.element.querySelector(".video__title")! as HTMLParagraphElement;
     titleElement.textContent = title;
   }

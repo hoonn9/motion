@@ -107,3 +107,23 @@ body {
   border-top: 1px solid var(--border-color);
   text-align: center;
 }
+
+.dialog {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-panel {
+  width: 50%;
+  background-color: white;
+}
+
+.dialog-panel > button {
+  display: block;
+  width: 100%;
+}
