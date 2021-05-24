@@ -1,5 +1,6 @@
 import { Component } from "./components/component.js";
 import { InputDialog } from "./components/dialog/dialog.js";
+import { URLFormComponent } from "./components/dialog/form.js";
 import { ImageComponent } from "./components/page/item/image.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { TodoComponent } from "./components/page/item/todo.js";
@@ -17,28 +18,78 @@ class App {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
 
-    const image = new ImageComponent("Image Title", "https://picsum.photos/600/300");
-    this.page.addChild(image);
+    // const image = new ImageComponent("Image Title", "https://picsum.photos/600/300");
+    // this.page.addChild(image);
 
-    const video = new VideoComponent("Video Title", "https://youtu.be/lKIoS4lnC-0");
-    this.page.addChild(video);
+    // const video = new VideoComponent("Video Title", "https://youtu.be/lKIoS4lnC-0");
+    // this.page.addChild(video);
 
-    const todo = new TodoComponent("Todo Title", "todo~");
-    this.page.addChild(todo);
+    // const todo = new TodoComponent("Todo Title", "todo~");
+    // this.page.addChild(todo);
 
-    const note = new NoteComponent("Note Title", "NoteComponent~");
-    this.page.addChild(note);
+    // const note = new NoteComponent("Note Title", "NoteComponent~");
+    // this.page.addChild(note);
 
     const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
     imageBtn.addEventListener("click", () => {
-      const dialog = new InputDialog();
+      const urlForm = new URLFormComponent(ImageComponent);
+      const dialog = new InputDialog(urlForm);
 
       dialog.setOnCloseListener(() => {
         dialog.removeFrom(document.body);
       });
 
       dialog.setOnSubmitListener(() => {
-        // 섹션을 만들어서 페이지에 추가
+        this.page.addChild(urlForm.item);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+
+    const videoBtn = document.querySelector("#new-video")! as HTMLButtonElement;
+    videoBtn.addEventListener("click", () => {
+      const urlForm = new URLFormComponent(VideoComponent);
+      const dialog = new InputDialog(urlForm);
+
+      dialog.setOnCloseListener(() => {
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.setOnSubmitListener(() => {
+        this.page.addChild(urlForm.item);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+    const todoBtn = document.querySelector("#new-todo")! as HTMLButtonElement;
+    todoBtn.addEventListener("click", () => {
+      const form = new URLFormComponent(TodoComponent);
+      const dialog = new InputDialog(form);
+
+      dialog.setOnCloseListener(() => {
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.setOnSubmitListener(() => {
+        this.page.addChild(form.item);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+    const noteBtn = document.querySelector("#new-note")! as HTMLButtonElement;
+    noteBtn.addEventListener("click", () => {
+      const form = new URLFormComponent(NoteComponent);
+      const dialog = new InputDialog(form);
+
+      dialog.setOnCloseListener(() => {
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.setOnSubmitListener(() => {
+        this.page.addChild(form.item);
         dialog.removeFrom(document.body);
       });
 

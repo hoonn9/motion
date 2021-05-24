@@ -35,14 +35,3 @@ export class VideoComponent extends BaseComponent<HTMLElement> {
     return url;
   }
 }
-
-`
-  <iframe
-    width="1280"
-    height="820"
-    src="https://www.youtube.com/embed/"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-    ></iframe>;
-`;

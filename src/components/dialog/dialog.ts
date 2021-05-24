@@ -7,7 +7,7 @@ type OnSubmitListener = () => void;
 export class InputDialog extends BaseComponent<HTMLElement> implements Composable {
   closeListener?: OnCloseListener;
   submitListener?: OnSubmitListener;
-  constructor() {
+  constructor(inputForm: Component) {
     super(`
     <dialog class="dialog">
       <div class="dialog__container">
@@ -30,6 +30,9 @@ export class InputDialog extends BaseComponent<HTMLElement> implements Composabl
     submitBtn.onclick = () => {
       this.submitListener && this.submitListener();
     };
+
+    const dialogBody = this.element.querySelector("#dialog__body")! as HTMLElement;
+    inputForm.attachTo(dialogBody);
   }
   setOnCloseListener(listener: OnCloseListener) {
     this.closeListener = listener;
