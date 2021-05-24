@@ -1,5 +1,5 @@
 import { Component } from "./components/component.js";
-import { InputDialog } from "./components/dialog/dialog.js";
+import { InputDialog, MediaData, TextData } from "./components/dialog/dialog.js";
 import { MediaSectionInput } from "./components/dialog/input/media-input.js";
 import { TextSectionInput } from "./components/dialog/input/text-input.js";
 import { ImageComponent } from "./components/page/item/image.js";
@@ -7,6 +7,14 @@ import { NoteComponent } from "./components/page/item/note.js";
 import { TodoComponent } from "./components/page/item/todo.js";
 import { VideoComponent } from "./components/page/item/video.js";
 import { Composable, PageComponent, PageItemComponent } from "./components/page/page.js";
+
+//  (MediaData | TextData) & Component  인터페이스로 받으면
+// MediaSectionInput, TextSectionInput에 커플링 되지 않고
+// 나중에 새로운 Input 을 만들어도 허용된다.
+
+type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
+  new (): T;
+};
 
 class App {
   // Component 이면서 Composable 가능한 page
@@ -19,53 +27,51 @@ class App {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
 
-    const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
-    this.setDialogBtn(imageBtn, MediaSectionInput, ImageComponent);
-
-    const videoBtn = document.querySelector("#new-video")! as HTMLButtonElement;
-    this.setDialogBtn(videoBtn, MediaSectionInput, VideoComponent);
-
-    const noteBtn = document.querySelector("#new-note")! as HTMLButtonElement;
-    this.setDialogBtn(noteBtn, TextSectionInput, NoteComponent);
-
-    const todoBtn = document.querySelector("#new-todo")! as HTMLButtonElement;
-    this.setDialogBtn(todoBtn, TextSectionInput, TodoComponent);
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-image",
+      MediaSectionInput,
+      (input: MediaSectionInput) => new ImageComponent(input.title, input.url)
+    );
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-video",
+      MediaSectionInput,
+      (input: MediaSectionInput) => new VideoComponent(input.title, input.url)
+    );
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-note",
+      TextSectionInput,
+      (input: TextSectionInput) => new NoteComponent(input.title, input.body)
+    );
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-todo",
+      TextSectionInput,
+      (input: TextSectionInput) => new TodoComponent(input.title, input.body)
+    );
   }
 
-  setDialogBtn(
-    btn: HTMLButtonElement,
-    sectionInput: { new (): MediaSectionInput | TextSectionInput },
-    itemConstructor: { new (a: string, b: string): Component }
+  // bind (연결)
+  private bindElementToDialog<T extends (MediaData | TextData) & Component>(
+    selector: string,
+    InputComponent: InputComponentConstructor<T>,
+    makeSection: (input: T) => Component
   ) {
-    btn.addEventListener("click", () => {
+    const element = document.querySelector(selector)! as HTMLButtonElement;
+    element.addEventListener("click", () => {
       const dialog = new InputDialog();
-      const inputSection = new sectionInput();
-      this.setDialog(dialog, inputSection, itemConstructor);
-    });
-  }
+      const input = new InputComponent();
+      dialog.addChild(input);
+      dialog.attachTo(this.dialogRoot);
 
-  setDialog(
-    dialog: InputDialog,
-    inputSection: MediaSectionInput | TextSectionInput,
-    itemConstructor: { new (a: string, b: string): Component }
-  ) {
-    dialog.addChild(inputSection);
-    dialog.attachTo(this.dialogRoot);
+      dialog.setOnCloseListener(() => {
+        dialog.removeFrom(this.dialogRoot);
+      });
 
-    dialog.setOnCloseListener(() => {
-      dialog.removeFrom(this.dialogRoot);
-    });
+      dialog.setOnSubmitListener(() => {
+        let item = makeSection(input);
+        this.page.addChild(item);
 
-    dialog.setOnSubmitListener(() => {
-      let item;
-      if (inputSection instanceof MediaSectionInput) {
-        item = new itemConstructor(inputSection.title, inputSection.url);
-      } else {
-        item = new itemConstructor(inputSection.title, inputSection.body);
-      }
-      this.page.addChild(item);
-
-      dialog.removeFrom(this.dialogRoot);
+        dialog.removeFrom(this.dialogRoot);
+      });
     });
   }
 }
