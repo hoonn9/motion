@@ -20,79 +20,52 @@ class App {
     this.page.attachTo(appRoot);
 
     const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
-    imageBtn.addEventListener("click", () => {
-      const dialog = new InputDialog();
-      const inputSection = new MediaSectionInput();
-
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-
-      dialog.setOnSubmitListener(() => {
-        const image = new ImageComponent(inputSection.title, inputSection.url);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
+    this.setDialogBtn(imageBtn, MediaSectionInput, ImageComponent);
 
     const videoBtn = document.querySelector("#new-video")! as HTMLButtonElement;
-    videoBtn.addEventListener("click", () => {
-      const dialog = new InputDialog();
-      const inputSection = new MediaSectionInput();
-
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-
-      dialog.setOnSubmitListener(() => {
-        const image = new VideoComponent(inputSection.title, inputSection.url);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
+    this.setDialogBtn(videoBtn, MediaSectionInput, VideoComponent);
 
     const noteBtn = document.querySelector("#new-note")! as HTMLButtonElement;
-    noteBtn.addEventListener("click", () => {
-      const dialog = new InputDialog();
-      const inputSection = new TextSectionInput();
-
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-
-      dialog.setOnSubmitListener(() => {
-        const image = new NoteComponent(inputSection.title, inputSection.body);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
+    this.setDialogBtn(noteBtn, TextSectionInput, NoteComponent);
 
     const todoBtn = document.querySelector("#new-todo")! as HTMLButtonElement;
-    todoBtn.addEventListener("click", () => {
+    this.setDialogBtn(todoBtn, TextSectionInput, TodoComponent);
+  }
+
+  setDialogBtn(
+    btn: HTMLButtonElement,
+    sectionInput: { new (): MediaSectionInput | TextSectionInput },
+    itemConstructor: { new (a: string, b: string): Component }
+  ) {
+    btn.addEventListener("click", () => {
       const dialog = new InputDialog();
-      const inputSection = new TextSectionInput();
+      const inputSection = new sectionInput();
+      this.setDialog(dialog, inputSection, itemConstructor);
+    });
+  }
 
-      dialog.addChild(inputSection);
-      dialog.attachTo(dialogRoot);
+  setDialog(
+    dialog: InputDialog,
+    inputSection: MediaSectionInput | TextSectionInput,
+    itemConstructor: { new (a: string, b: string): Component }
+  ) {
+    dialog.addChild(inputSection);
+    dialog.attachTo(this.dialogRoot);
 
-      dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
-      });
+    dialog.setOnCloseListener(() => {
+      dialog.removeFrom(this.dialogRoot);
+    });
 
-      dialog.setOnSubmitListener(() => {
-        const image = new TodoComponent(inputSection.title, inputSection.body);
-        this.page.addChild(image);
-        dialog.removeFrom(dialogRoot);
-      });
+    dialog.setOnSubmitListener(() => {
+      let item;
+      if (inputSection instanceof MediaSectionInput) {
+        item = new itemConstructor(inputSection.title, inputSection.url);
+      } else {
+        item = new itemConstructor(inputSection.title, inputSection.body);
+      }
+      this.page.addChild(item);
+
+      dialog.removeFrom(this.dialogRoot);
     });
   }
 }
