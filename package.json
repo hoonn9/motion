@@ -1,0 +1,22 @@
+{
+  "name": "motion",
+  "version": "1.0.0",
+  "description": "Motion is a tiny notion built using vanila typescript",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoonn9/Motion.git"
+  },
+  "author": "hoonn9",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoonn9/Motion/issues"
+  },
+  "homepage": "https://github.com/hoonn9/Motion#readme",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
